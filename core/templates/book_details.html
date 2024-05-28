@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h1 class="text-center mb-4">{{ book.title }}</h1>
+        {% if book.cover %}
+            <img src="{{ book.cover.url }}" class="img-fluid mb-4" alt="{{ book.title }}">
+        {% else %}
+            <img src="https://via.placeholder.com/800x600?text=No+Cover" class="img-fluid mb-4" alt="{{ book.title }}">
+        {% endif %}
+        <p>{{ book.content }}</p>
+        <p><strong>Автор:</strong> {{ book.author.name }}</p>
+        <p><strong>Жанр:</strong> {{ book.genre.title }}</p>
+        <p><strong>Дата публикации:</strong> {{ book.publication_date }}</p>
+    </div>
+</div>
+{% endblock %}

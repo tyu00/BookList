@@ -4,23 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Книжный лист</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 70px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Книжный лист</h1>
-    <nav>
-        <ul>
-            <li><a href="{% url 'home' %}">Главная</a></li>
-            <li><a href="{% url 'bookmarks' %}">Закладки</a></li>
-            <li><a href="{% url 'add_book' %}">Добавить книгу</a></li>
-            {% if user.is_authenticated %}
-                <li><a href="{% url 'logout' %}">Выйти</a></li>
-            {% else %}
-                <li><a href="{% url 'login' %}">Войти</a></li>
-                <li><a href="{% url 'register' %}">Зарегистрироваться</a></li>
-            {% endif %}
-        </ul>
-    </nav>
-    {% block content %}{% endblock %}
+   {% include 'inc/_navbar.html' %}
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
 
+</html>

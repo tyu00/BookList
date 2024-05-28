@@ -1,26 +1,14 @@
 from django import forms
-from .models import Book, Rating, Bookmark, Review
+from .models import Book, Author, Genre
+
+
+class AuthorForm(forms.ModelForm):
+    class Meta:
+        model = Author
+        fields = ('name', 'birth_date')
 
 
 class BookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = ('title', 'content', 'cover', 'publication_date', 'author', 'genre')
-
-
-class RatingForm(forms.ModelForm):
-    class Meta:
-        model = Rating
-        fields = ('rating',)
-
-
-class BookmarkForm(forms.ModelForm):
-    class Meta:
-        model = Bookmark
-        fields = ('book',)
-
-
-class ReviewForm(forms.ModelForm):
-    class Meta:
-        model = Review
-        fields = ['text']
