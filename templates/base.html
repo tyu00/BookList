@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Книжный лист</title>
+</head>
+<body>
+    <h1>Книжный лист</h1>
+    <nav>
+        <ul>
+            <li><a href="{% url 'home' %}">Главная</a></li>
+            <li><a href="{% url 'bookmarks' %}">Закладки</a></li>
+            <li><a href="{% url 'ratings' %}">Оценки</a></li>
+            <li><a href="{% url 'add_book' %}">Добавить книгу</a></li>
+            <li><a href="{% url 'login' %}">Войти</a></li>
+            <li><a href="{% url 'register' %}">Зарегистрироваться</a></li>
+        </ul>
+    </nav>
+    {% block content %}{% endblock %}
+</body>
+</html>

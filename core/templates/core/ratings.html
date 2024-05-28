@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Оценки</h1>
+<ul>
+  {% for rating in ratings %}
+    <li>
+      {{ rating.book.title }}
+      {{ rating.rating }}
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}
+>

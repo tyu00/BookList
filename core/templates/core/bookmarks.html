@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Закладки</h1>
+<ul>
+  {% for bookmark in bookmarks %}
+    <li>
+      {{ bookmark.title }}
+      <a href="{% url 'book_details' bookmark.id %}">Подробнее</a>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

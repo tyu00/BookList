@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ book.title }}</h1>
+<p>Дата публикации: {{ book.publication_date }}</p>
+<p>Автор: {{ book.author.name }}</p>
+<p>Жанр: {{ book.genre.title }}</p>
+<p>Содержание: {{ book.content }}</p>
+<p>Оценка: {{ book.ratings.all }}</p>
+<form action="{% url 'add_rating' book.id %}" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Добавить оценку</button>
+</form>
+<form action="{% url 'bookmark' book.id %}" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Добавить в закладки</button>
+</form>
+{% endblock %}
