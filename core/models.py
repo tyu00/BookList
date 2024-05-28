@@ -45,16 +45,34 @@ class Genre(models.Model):
 
 
 class User(AbstractUser):
-    bookmarks = models.ManyToManyField('Book', related_name='bookmarked_by', blank=True)
     read_status = models.CharField(max_length=20, choices=[
         ('read', 'Прочитано'),
         ('unread', 'Не прочитано'),
         ('postponed', 'Отложено')
     ], default='unread')
-    ratings = models.ManyToManyField('Book', through='Rating', related_name='rated_by_user')
-    reviews = models.ManyToManyField('Book', through='Review', related_name='reviewed_by_user')
-    groups = models.ManyToManyField('auth.Group', related_name='user_set_custom', blank=True)
-    user_permissions = models.ManyToManyField('auth.Permission', related_name='user_set_custom', blank=True)
+    ratings = models.ManyToManyField('Book', through='Rating', related_name='rated_by_users')
+    reviews = models.ManyToManyField('Book', through='Review', related_name='reviewed_by_users')
+    bookmarks = models.ManyToManyField('Book', through='Bookmark', related_name='bookmarked_by_users')
+    groups = models.ManyToManyField(
+        'auth.Group',
+        verbose_name='groups',
+        blank=True,
+        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+        related_name='custom_user_set',
+        related_query_name='user',
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        verbose_name='user permissions',
+        blank=True,
+        help_text='Specific permissions for this user.',
+        related_name='custom_user_set',
+        related_query_name='user',
+    )
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
 
 class Rating(models.Model):
@@ -66,6 +84,7 @@ class Rating(models.Model):
         verbose_name = 'Оценка'
         verbose_name_plural = 'Оценки'
         ordering = ['rating']
+        unique_together = ('user', 'book')
 
 
 class Review(models.Model):

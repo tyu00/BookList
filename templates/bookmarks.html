@@ -5,8 +5,8 @@
 <ul>
   {% for bookmark in bookmarks %}
     <li>
-      {{ bookmark.title }}
-      <a href="{% url 'book_details' bookmark.id %}">Подробнее</a>
+      {{ bookmark.book.title }}
+      <a href="{% url 'book_details' bookmark.book.id %}">Подробнее</a>
     </li>
   {% endfor %}
 </ul>

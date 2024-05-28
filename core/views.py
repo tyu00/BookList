@@ -1,59 +1,21 @@
-from django.shortcuts import render, redirect
-from .models import Book, Author, Genre
-from .forms import BookForm, RatingForm
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .models import Book, Bookmark, Rating
+from .forms import BookForm, RatingForm, BookmarkForm
+from .forms import ReviewForm
 
 
-# Представление для входа
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-    return render(request, 'login.html')
-
-
-# Представление для выхода
-def logout_view(request):
-    logout(request)
-    return redirect('home')
-
-
-# Представление для регистрации
-def register_view(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(request, username=username, password=password)
-            login(request, user)
-            return redirect('home')
-    else:
-        form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
-
-
-# Представление для главной страницы
 def home(request):
-    books = Book.objects.all().order_by('-publication_date')
+    books = Book.objects.all()
     return render(request, 'home.html', {'books': books})
 
 
-# Представление для деталей книги
 def book_details(request, book_id):
-    book = Book.objects.get(id=book_id)
+    book = get_object_or_404(Book, id=book_id)
     return render(request, 'book_details.html', {'book': book})
 
 
-# Представление для добавления книги
-@login_required
 def add_book(request):
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
@@ -65,10 +27,8 @@ def add_book(request):
     return render(request, 'add_book.html', {'form': form})
 
 
-# Представление для добавления оценки
-@login_required
 def add_rating(request, book_id):
-    book = Book.objects.get(id=book_id)
+    book = get_object_or_404(Book, id=book_id)
     if request.method == 'POST':
         form = RatingForm(request.POST)
         if form.is_valid():
@@ -82,15 +42,63 @@ def add_rating(request, book_id):
     return render(request, 'add_rating.html', {'form': form, 'book': book})
 
 
-# Представление для закладок пользователя
-@login_required
 def bookmarks(request):
-    user_bookmarks = Book.objects.filter(bookmarks__user=request.user)
+    user_bookmarks = request.user.bookmarks_created.all()
     return render(request, 'bookmarks.html', {'bookmarks': user_bookmarks})
 
 
-# Представление для оценок пользователя
-@login_required
+def bookmark(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    bookmark, created = Bookmark.objects.get_or_create(user=request.user, book=book)
+    if not created:
+        bookmark.delete()
+    return redirect('book_details', book_id=book_id)
+
+
 def ratings(request):
-    user_ratings = Book.objects.filter(ratings__user=request.user)
+    user_ratings = request.user.ratings_given.all()
     return render(request, 'ratings.html', {'ratings': user_ratings})
+
+
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')
+
+
+def register_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'register.html', {'form': form})
+
+
+def add_review(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.book = book
+            review.user = request.user
+            review.save()
+            return redirect('book_detail', book_id=book.id)
+    else:
+        form = ReviewForm()
+    return render(request, 'core/add_review.html', {'form': form, 'book': book})

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Книжный лист</title>
 </head>
 <body>
@@ -9,12 +11,16 @@
         <ul>
             <li><a href="{% url 'home' %}">Главная</a></li>
             <li><a href="{% url 'bookmarks' %}">Закладки</a></li>
-            <li><a href="{% url 'ratings' %}">Оценки</a></li>
             <li><a href="{% url 'add_book' %}">Добавить книгу</a></li>
-            <li><a href="{% url 'login' %}">Войти</a></li>
-            <li><a href="{% url 'register' %}">Зарегистрироваться</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">Выйти</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Войти</a></li>
+                <li><a href="{% url 'register' %}">Зарегистрироваться</a></li>
+            {% endif %}
         </ul>
     </nav>
     {% block content %}{% endblock %}
 </body>
 </html>
+
