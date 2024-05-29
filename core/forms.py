@@ -1,5 +1,12 @@
 from django import forms
-from .models import Book, Author, Genre
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .models import Book, Author, User
+
+
+class BookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ('title', 'content', 'cover', 'publication_date', 'author', 'genre')
 
 
 class AuthorForm(forms.ModelForm):
@@ -8,7 +15,11 @@ class AuthorForm(forms.ModelForm):
         fields = ('name', 'birth_date')
 
 
-class BookForm(forms.ModelForm):
+class RegistrationForm(UserCreationForm):
     class Meta:
-        model = Book
-        fields = ('title', 'content', 'cover', 'publication_date', 'author', 'genre')
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+
+
+class LoginForm(AuthenticationForm):
+    pass
