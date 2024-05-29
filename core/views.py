@@ -94,7 +94,7 @@ def user_bookmarks(request):
 
 
 @login_required
-def change_bookmark_status(request, bookmark_id):
+def change_bookmark_status(bookmark_id):
     bookmark = get_object_or_404(Bookmark, id=bookmark_id)
     if bookmark.status == 'to-read':
         bookmark.status = 'read'

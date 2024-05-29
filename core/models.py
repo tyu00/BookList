@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from ListBook import settings
+
 
 class Book(models.Model):
     title = models.CharField('Название', max_length=150)
@@ -49,6 +51,6 @@ class User(AbstractUser):
 
 
 class Bookmark(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookmarks')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bookmarks')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='bookmarks')
     status = models.CharField(max_length=20, choices=[('read', 'Прочитано'), ('to-read', 'Отложено')])
