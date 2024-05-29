@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <div class="row justify-content-center">
     <div class="col-md-8">
         <h1 class="text-center mb-4">{{ book.title }}</h1>
@@ -15,4 +16,11 @@
         <p><strong>Дата публикации:</strong> {{ book.publication_date }}</p>
     </div>
 </div>
+{% if user.is_authenticated %}
+    {% if book in user.bookmarks.all %}
+        <a href="{% url 'remove_bookmark' book.id %}">Удалить из закладок</a>
+    {% else %}
+        <a href="{% url 'add_bookmark' book.id %}">Добавить в закладки</a>
+    {% endif %}
+{% endif %}
 {% endblock %}

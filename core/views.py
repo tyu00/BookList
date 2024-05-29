@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Book
+from .models import Book, Bookmark
 from .forms import BookForm, AuthorForm, RegistrationForm, LoginForm
 from .filters import BookFilter
 from django.contrib.auth import login, logout
@@ -68,3 +68,37 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('home')
+
+
+@login_required
+def add_bookmark(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    bookmark, created = Bookmark.objects.get_or_create(user=request.user, book=book, status='to-read')
+    if not created:
+        bookmark.status = 'read' if bookmark.status == 'to-read' else 'to-read'
+        bookmark.save()
+    return redirect('book_details', book_id=book_id)
+
+
+@login_required
+def remove_bookmark(request, bookmark_id):
+    bookmark = get_object_or_404(Bookmark, id=bookmark_id, user=request.user)
+    bookmark.delete()
+    return redirect('user_bookmarks')
+
+
+@login_required
+def user_bookmarks(request):
+    bookmarks = Bookmark.objects.filter(user=request.user)
+    return render(request, 'user_bookmarks.html', {'bookmarks': bookmarks})
+
+
+@login_required
+def change_bookmark_status(request, bookmark_id):
+    bookmark = get_object_or_404(Bookmark, id=bookmark_id)
+    if bookmark.status == 'to-read':
+        bookmark.status = 'read'
+    else:
+        bookmark.status = 'to-read'
+    bookmark.save()
+    return redirect('user_bookmarks')

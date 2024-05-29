@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Мои закладки</h1>
+<ul>
+    {% for bookmark in bookmarks %}
+    <li>
+        <a href="{% url 'book_details' bookmark.book.id %}">{{ bookmark.book.title }}</a>
+        - Статус: {{ bookmark.get_status_display }}
+        {% if bookmark.status == 'to-read' %}
+        <a href="{% url 'remove_bookmark' bookmark.id %}" class="btn btn-sm btn-danger">Удалить</a>
+        <a href="{% url 'change_bookmark_status' bookmark.id %}" class="btn btn-sm btn-success">Прочитано</a>
+        {% else %}
+        <a href="{% url 'change_bookmark_status' bookmark.id %}" class="btn btn-sm btn-warning">Не прочитано</a>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
+{% if bookmarks %}
+<div class="list-group">
+    {% for bookmark in bookmarks %}
+    <div class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{% url 'book_details' bookmark.book.id %}" class="text-decoration-none">{{ bookmark.book.title }}</a>
+        <div>
+            <span class="badge bg-primary">Статус: {{ bookmark.get_status_display }}</span>
+            {% if bookmark.status == 'to-read' %}
+            <a href="{% url 'remove_bookmark' bookmark.id %}" class="btn btn-sm btn-danger ms-2">Удалить</a>
+            <a href="{% url 'change_bookmark_status' bookmark.id %}" class="btn btn-sm btn-success ms-2">Прочитано</a>
+            {% else %}
+            <a href="{% url 'change_bookmark_status' bookmark.id %}" class="btn btn-sm btn-warning ms-2">Не прочитано</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">У вас пока нет закладок.</p>
+{% endif %}

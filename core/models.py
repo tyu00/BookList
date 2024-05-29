@@ -46,3 +46,9 @@ class Genre(models.Model):
 
 class User(AbstractUser):
     read_status = models.BooleanField(default=False)
+
+
+class Bookmark(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookmarks')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='bookmarks')
+    status = models.CharField(max_length=20, choices=[('read', 'Прочитано'), ('to-read', 'Отложено')])
