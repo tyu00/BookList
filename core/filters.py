@@ -3,7 +3,7 @@ from .models import Book
 
 
 class BookFilter(FilterSet):
-    title = filters.CharFilter(label='название', lookup_expr='icontains')
+    title = filters.CharFilter(label='Название', lookup_expr='icontains')
 
     class Meta:
         model = Book

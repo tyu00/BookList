@@ -36,6 +36,17 @@ def add_book(request):
     return render(request, 'add_book.html', {'book_form': book_form, 'author_form': author_form})
 
 
+def add_author(request):
+    if request.method == 'POST':
+        author_form = AuthorForm(request.POST)
+        if author_form.is_valid():
+            author = author_form.save()
+            return redirect('add_book')
+    else:
+        author_form = AuthorForm()
+    return render(request, 'add_author.html', {'author_form': author_form})
+
+
 def books_list(request):
     book_filter = BookFilter(request.GET, queryset=Book.objects.all())
     return render(request, 'books_list.html', {'filter': book_filter})
@@ -94,8 +105,8 @@ def user_bookmarks(request):
 
 
 @login_required
-def change_bookmark_status(bookmark_id):
-    bookmark = get_object_or_404(Bookmark, id=bookmark_id)
+def change_bookmark_status(request, bookmark_id):
+    bookmark = get_object_or_404(Bookmark, id=bookmark_id, user=request.user)
     if bookmark.status == 'to-read':
         bookmark.status = 'read'
     else:

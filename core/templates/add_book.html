@@ -13,27 +13,13 @@
                     {% for author in book_form.author.field.queryset %}
                         <option value="{{ author.pk }}">{{ author.name }}</option>
                     {% endfor %}
-                    <option value="new">Добавить нового автора</option>
                 </select>
+                <a href="{% url 'add_author' %}" class="btn btn-secondary">Добавить нового автора</a>
                 {% if book_form.author.help_text %}
                     <small class="form-text text-muted">{{ book_form.author.help_text }}</small>
                 {% endif %}
                 {% for error in book_form.author.errors %}
                     <div class="alert alert-danger">{{ error }}</div>
-                {% endfor %}
-            </div>
-            <div id="author-form" style="display: none;">
-                {% for field in author_form %}
-                    <div class="mb-3">
-                        {{ field.label_tag }}
-                        {{ field }}
-                        {% if field.help_text %}
-                            <small class="form-text text-muted">{{ field.help_text }}</small>
-                        {% endif %}
-                        {% for error in field.errors %}
-                            <div class="alert alert-danger">{{ error }}</div>
-                        {% endfor %}
-                    </div>
                 {% endfor %}
             </div>
             {% for field in book_form %}
@@ -54,19 +40,4 @@
         </form>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var authorSelect = document.getElementById('{{ book_form.author.id_for_label }}');
-        var authorForm = document.getElementById('author-form');
-
-        authorSelect.addEventListener('change', function() {
-            if (this.value === 'new') {
-                authorForm.style.display = 'block';
-            } else {
-                authorForm.style.display = 'none';
-            }
-        });
-    });
-</script>
 {% endblock %}
